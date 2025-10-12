@@ -16,8 +16,17 @@ merge_to_parent() {
   local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)"
   local CURRENT_PATH="$(pwd)"
   cd "${CURRENT_PATH%%.worktrees/*}"
-  git merge "$BRANCHTOMERGE"
+  git merge --no-edit "$BRANCHTOMERGE"
   cd "$CURRENT_PATH"
+}
+
+# This merges the parent worktree's current branch into the current worktree, if the parent has updated
+merge_from_parent() {
+    local CURRENT_PATH="$(pwd)"
+    cd "${CURRENT_PATH%%.worktrees/*}"
+    local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)"
+    cd "$CURRENT_PATH"
+    git merge --no-edit $BRANCHTOMERGE
 }
 
 # this "aborts" the branch: deletes branch and worktree, and ends up in the "parent" worktree. git worktree remove --force and git branch -D to force delete even with unmerged commits

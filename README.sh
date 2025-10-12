@@ -1,8 +1,17 @@
 #!/bin/zsh
 # Functions for parallel worktree operations
 
-# add_worktree <branch_folder_name> adds a new worktree  the given branch, cd's into it, and runs pnpm install if package.json is present
+# add_worktree <new_branch_name> adds a new worktree in the given branch, cd's into it, and runs pnpm install if package.json is present
+# the new worktree is at the <current_path>.worktrees/<branch_name> path. This permits a recursive structure of worktrees,
+# which correspond to tasks/agents and subagents. merge_to_parent and merge_from parent are made to keep these in sync,
+# if you  want to merge from the main branch directly, just use git merge main as usual.
+
+# We try to set up the env as much as possible, so if package.json is present, we run pnpm install.
 # pnpm install is better than npm because it uses the pnpm store and hard links to save space and time
+
+# the commands cds into the new worktree and we can start vibing immediately: add_worktree <branch_name>; claude # or code . for vscode, droid, codex, gemini...
+# Directly open vscode in the new worktree after creation: add_worktree <branch_name>; code .
+# On Mac, you might need to install the 'code' command in PATH from the Command Palette: Shift + Command + P, type 'shell command' to find the option.
 add_worktree() {
   local NEWBRANCH="$1"
   local NEWWORKTREE="$(git rev-parse --show-toplevel).worktrees/$NEWBRANCH"
@@ -41,6 +50,7 @@ abort_branch() {
 }
 
 # finish_branch is a simple wrapper to merge to parent and then abort branch
+# still, uncommitted changes will be lost!
 finish_branch() {
   merge_to_parent
   abort_branch

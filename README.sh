@@ -37,3 +37,9 @@ abort_branch() {
   git worktree remove --force "$CURRENT_PATH"
   git branch -D "$BRANCHTOMERGE"
 }
+
+# simple wrapper to merge to parent and then abort branch
+finish_branch() {
+  merge_to_parent
+  abort_branch
+}

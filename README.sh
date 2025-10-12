@@ -9,9 +9,6 @@ add_worktree() {
   cd "$NEWWORKTREE"
   if [[ -f package.json ]]; then
     pnpm install || echo "pnpm failed"
-  else
-    echo "No package.json found, skipping pnpm install"
-  fi
 }
 
 # This merges the current state of the branch in the current worktree into the "parent worktree" and goes back to the working branch

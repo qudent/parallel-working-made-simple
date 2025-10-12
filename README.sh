@@ -1,6 +1,7 @@
 #!/bin/zsh
 # Functions for parallel worktree operations
-# This adds a new worktree for the given branch, cd's into it, and runs pnpm install if package.json is present
+
+# add_worktree <branch_folder_name> adds a new worktree  the given branch, cd's into it, and runs pnpm install if package.json is present
 # pnpm install is better than npm because it uses the pnpm store and hard links to save space and time
 add_worktree() {
   local NEWBRANCH="$1"
@@ -11,7 +12,7 @@ add_worktree() {
     pnpm install || echo "pnpm failed"
 }
 
-# This merges the current state of the branch in the current worktree into the "parent worktree" and goes back to the working branch
+# merge_to_parent merges the current state of the branch in the current worktree into the "parent worktree" and goes back to the working branch
 merge_to_parent() {
   local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)"
   local CURRENT_PATH="$(pwd)"
@@ -20,7 +21,7 @@ merge_to_parent() {
   cd "$CURRENT_PATH"
 }
 
-# This merges the parent worktree's current branch into the current worktree, if the parent has updated
+# merge_from_parent merges the parent worktree's current branch into the current worktree, if the parent has updated
 merge_from_parent() {
     local CURRENT_PATH="$(pwd)"
     cd "${CURRENT_PATH%%.worktrees/*}"
@@ -29,7 +30,7 @@ merge_from_parent() {
     git merge --no-edit $BRANCHTOMERGE
 }
 
-# This "aborts" the branch: deletes branch and worktree, and ends up in the "parent" worktree.
+# abort_branch "aborts" the branch: deletes branch and worktree, and ends up in the "parent" worktree.
 # Ignores uncommitted changes and unmerged commits!
 abort_branch() {
   local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)"
@@ -39,7 +40,7 @@ abort_branch() {
   git branch -D "$BRANCHTOMERGE"
 }
 
-# simple wrapper to merge to parent and then abort branch
+# finish_branch is a simple wrapper to merge to parent and then abort branch
 finish_branch() {
   merge_to_parent
   abort_branch

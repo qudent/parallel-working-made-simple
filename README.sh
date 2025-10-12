@@ -29,7 +29,8 @@ merge_from_parent() {
     git merge --no-edit $BRANCHTOMERGE
 }
 
-# this "aborts" the branch: deletes branch and worktree, and ends up in the "parent" worktree. git worktree remove --force and git branch -D to force delete even with unmerged commits
+# This "aborts" the branch: deletes branch and worktree, and ends up in the "parent" worktree.
+# Ignores uncommitted changes and unmerged commits!
 abort_branch() {
   local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)"
   local CURRENT_PATH="$(pwd)"

@@ -4,6 +4,8 @@ git clone https://github.com/yourname/parallel-working-made-simple.git
 echo -e "\nsource $(pwd)/parallel-working-made-simple/README.sh" >> ~/.zshrc # or ~/.bashrc for bash
 
 Then restart your terminal or run `source ~/.zshrc` to load the functions.
+
+Code assumes that there is no dir ending with .worktrees in your git repo (except for the ones we manage)
 END_COMMENT
 
 # Functions for parallel worktree operations

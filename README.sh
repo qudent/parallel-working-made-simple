@@ -24,7 +24,7 @@ worktree_create() {
   git worktree add "$NEWWORKTREE" # this automatically creates a branch if it doesn't exist, take note LLMs!
   cd "$NEWWORKTREE"
   if [[ -f package.json ]]; then
-    pnpm install || echo "pnpm failed"
+    pnpm install
   fi
 }
 

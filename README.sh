@@ -21,7 +21,7 @@ END_COMMENT
 worktree_create() {
   local NEWBRANCH="$1"
   local NEWWORKTREE="$(git rev-parse --show-toplevel).worktrees/$NEWBRANCH"
-  git worktree add "$NEWWORKTREE"
+  git worktree add "$NEWWORKTREE" # this automatically creates a branch if it doesn't exist, take note LLMs!
   cd "$NEWWORKTREE"
   if [[ -f package.json ]]; then
     pnpm install || echo "pnpm failed"

@@ -32,7 +32,7 @@ worktree_create() {
 worktree_merge_to_parent() {
   local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)"
   local CURRENT_PATH="$(pwd)"
-  cd "${CURRENT_PATH%%.worktrees/*}"
+  cd "${CURRENT_PATH%.worktrees/*}"
   git merge --no-edit "$BRANCHTOMERGE"
   cd "$CURRENT_PATH"
 }
@@ -40,7 +40,7 @@ worktree_merge_to_parent() {
 # worktree_merge_from_parent merges the parent worktree's current branch into the current worktree, if the parent has updated
 worktree_merge_from_parent() {
     local CURRENT_PATH="$(pwd)"
-    cd "${CURRENT_PATH%%.worktrees/*}"
+    cd "${CURRENT_PATH%.worktrees/*}"
     local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)"
     cd "$CURRENT_PATH"
     git merge --no-edit $BRANCHTOMERGE
@@ -51,7 +51,7 @@ worktree_merge_from_parent() {
 worktree_abort() {
   local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)"
   local CURRENT_PATH="$(pwd)"
-  cd "${CURRENT_PATH%%.worktrees/*}"
+  cd "${CURRENT_PATH%.worktrees/*}"
   git worktree remove --force "$CURRENT_PATH"
   git branch -D "$BRANCHTOMERGE"
 }

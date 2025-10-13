@@ -1,7 +1,7 @@
 : <<'END_COMMENT'
-Installation (macOS)
+Installation (macOS/Linux)
 git clone https://github.com/yourname/parallel-working-made-simple.git
-echo -e "\nsource $(pwd)/parallel-working-made-simple/README.sh" >> ~/.zshrc
+echo -e "\nsource $(pwd)/parallel-working-made-simple/README.sh" >> ~/.zshrc # or ~/.bashrc for bash
 
 Then restart your terminal or run `source ~/.zshrc` to load the functions.
 END_COMMENT

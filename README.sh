@@ -1,4 +1,11 @@
-#!/bin/zsh
+: <<'END_COMMENT'
+Installation (macOS)
+git clone https://github.com/yourname/parallel-working-made-simple.git
+echo -e "\nsource $(pwd)/parallel-working-made-simple/README.sh" >> ~/.zshrc
+
+Then restart your terminal or run `source ~/.zshrc` to load the functions.
+END_COMMENT
+
 # Functions for parallel worktree operations
 
 # worktree_create <new_branch_name> creates a new worktree with the given branch, cd's into it, and runs pnpm install if package.json is present

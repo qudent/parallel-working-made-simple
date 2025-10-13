@@ -46,9 +46,9 @@ worktree_merge_from_parent() {
     git merge --no-edit $BRANCHTOMERGE
 }
 
-# worktree_abort_branch "aborts" the branch: deletes branch and worktree, and ends up in the "parent" worktree.
+# worktree_abort "aborts" the worktree at the current path: deletes branch and worktree, and ends up in the "parent" worktree.
 # Ignores uncommitted changes and unmerged commits!
-worktree_abort_branch() {
+worktree_abort() {
   local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)"
   local CURRENT_PATH="$(pwd)"
   cd "${CURRENT_PATH%%.worktrees/*}"
@@ -56,9 +56,9 @@ worktree_abort_branch() {
   git branch -D "$BRANCHTOMERGE"
 }
 
-# worktree_finish_branch is a simple wrapper to merge to parent and then abort branch
+# worktree_finish is a simple wrapper to merge to parent and then abort branch
 # still, uncommitted changes will be lost!
-worktree_finish_branch() {
+worktree_finish() {
   worktree_merge_to_parent
-  worktree_abort_branch
+  worktree_abort
 }

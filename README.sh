@@ -1,7 +1,7 @@
 : <<'END_COMMENT'
 Installation (macOS/Linux)
 git clone https://github.com/yourname/parallel-working-made-simple.git
-echo -e "\nsource $(pwd)/parallel-working-made-simple/README.sh" >> ~/.zshrc # or ~/.bashrc for bash
+echo -e "\nsource $PWD/parallel-working-made-simple/README.sh" >> ~/.zshrc # or ~/.bashrc for bash
 
 Then restart your terminal or run `source ~/.zshrc` to load the functions.
 
@@ -21,6 +21,11 @@ END_COMMENT
 # the commands cds into the new worktree and we can start vibing immediately: `worktree_create <branch_name>; claude`` # or `code .`` for vscode, droid, codex, gemini...
 # For `code .` on Mac, you might need to install the 'code' command in PATH from the Command Palette: Shift + Command + P, type 'shell command' to find the option.
 worktree_create() {
+    # check if argument is given
+    if [ -z "$1" ]; then
+      echo "Usage: worktree_create <new_branch_name>"
+      return 1
+    fi
   local NEWBRANCH="$1"
   local NEWWORKTREE="$(git rev-parse --show-toplevel).worktrees/$NEWBRANCH"
   git worktree add "$NEWWORKTREE" # this automatically creates a branch if it doesn't exist, take note LLMs!
@@ -30,31 +35,36 @@ worktree_create() {
   fi
 }
 
+# worktree_cd_to_parent cds to the "parent worktree" of the current worktree, returns path of the child worktree
+worktree_cd_to_parent() {
+  CHILD_PATH="$PWD"
+  cd "${$PWD%.worktrees/*}"
+}
+
 # worktree_merge_to_parent merges the current state of the branch in the current worktree into the "parent worktree" and goes back to the working branch
 worktree_merge_to_parent() {
-  local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)"
-  local CURRENT_PATH="$(pwd)"
-  cd "${CURRENT_PATH%.worktrees/*}"
+  local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)" # first get current branch
+
+  worktree_cd_to_parent # set CHILD_PATH as side effect
   git merge --no-edit "$BRANCHTOMERGE"
-  cd "$CURRENT_PATH"
+  cd $CHILD_PATH
 }
 
 # worktree_merge_from_parent merges the parent worktree's current branch into the current worktree, if the parent has updated
 worktree_merge_from_parent() {
-    local CURRENT_PATH="$(pwd)"
-    cd "${CURRENT_PATH%.worktrees/*}"
-    local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)"
-    cd "$CURRENT_PATH"
-    git merge --no-edit $BRANCHTOMERGE
+  pushd $PWD > /dev/null
+  worktree_cd_to_parent # set CHILD_PATH as side effect
+  local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)" # now we get the parent's branch
+  cd "$CHILD_PATH"
+  git merge --no-edit $BRANCHTOMERGE
 }
 
 # worktree_abort "aborts" the worktree at the current path: deletes branch and worktree, and ends up in the "parent" worktree.
 # Ignores uncommitted changes and unmerged commits!
 worktree_abort() {
   local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)"
-  local CURRENT_PATH="$(pwd)"
-  cd "${CURRENT_PATH%.worktrees/*}"
-  git worktree remove --force "$CURRENT_PATH"
+  worktree_cd_to_parent #set CHILD_PATH as side effect
+  git worktree remove --force "$CHILD_PATH"
   git branch -D "$BRANCHTOMERGE"
 }
 

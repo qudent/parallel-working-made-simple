@@ -38,7 +38,7 @@ worktree_create() {
 # worktree_cd_to_parent cds to the "parent worktree" of the current worktree, returns path of the child worktree
 worktree_cd_to_parent() {
   CHILD_PATH="$PWD"
-  cd "${$PWD%.worktrees/*}"
+  cd "${PWD%.worktrees/*}"
 }
 
 # worktree_merge_to_parent merges the current state of the branch in the current worktree into the "parent worktree" and goes back to the working branch

@@ -1,3 +1,5 @@
+See `README.sh` for the code itself (which is self-explaining or can be very easily explained by any AI). The point is to create a scaffold that makes it very simple to use parallel worktrees to work on features in parallel, or to try different agents/prompts implement the same features. If you do this, you learn more quickly what works and what doesn't.
+
 Agents find it much easier to make comparisons across all branches without sequentially making git commits! Case in point:
 ```
 >  can you compare the mock data structure from all extant branches (by find . in the worktrees)? which of them is the newest 

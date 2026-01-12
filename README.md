@@ -19,12 +19,14 @@ source ~/.claude/skills/parallel-worktrees/worktrees.sh
 
 # Create worktree for first bug
 worktree_create fix-auth-bug
-# osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && claude \"fix the authentication timeout bug\""'
+# macOS: osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && claude \"fix the authentication timeout bug\""'
+# Linux: xterm -e "cd $(pwd) && claude 'fix the authentication timeout bug'" &
 
 # Back in original terminal, create another worktree
 cd ..  # return to parent
 worktree_create fix-button-styling
-# osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && claude \"fix the submit button styling\""'
+# macOS: osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && claude \"fix the submit button styling\""'
+# Linux: xterm -e "cd $(pwd) && claude 'fix the submit button styling'" &
 
 # When each agent finishes, in its terminal:
 worktree_finish  # merges to parent and cleans up
@@ -37,15 +39,18 @@ source ~/.claude/skills/parallel-worktrees/worktrees.sh
 
 # Try three different agents on the same problem
 worktree_create approach-claude
-# osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && claude \"implement the caching layer\""'
+# macOS: osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && claude \"implement the caching layer\""'
+# Linux: xterm -e "cd $(pwd) && claude 'implement the caching layer'" &
 
 cd ..
 worktree_create approach-codex
-# xterm -e "cd $(pwd) && codex 'implement the caching layer'" &
+# macOS: osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && codex \"implement the caching layer\""'
+# Linux: xterm -e "cd $(pwd) && codex 'implement the caching layer'" &
 
 cd ..
 worktree_create approach-gemini
-# Start your preferred agent here
+# macOS: osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && gemini \"implement the caching layer\""'
+# Linux: xterm -e "cd $(pwd) && gemini 'implement the caching layer'" &
 
 # Compare results across worktrees:
 # diff -r ../approach-claude/src ../approach-codex/src

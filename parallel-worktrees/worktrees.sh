@@ -51,7 +51,6 @@ worktree_merge_to_parent() {
 
 # worktree_merge_from_parent merges the parent worktree's current branch into the current worktree, if the parent has updated
 worktree_merge_from_parent() {
-  pushd $PWD > /dev/null
   worktree_cd_to_parent # set CHILD_PATH as side effect
   local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)" # now we get the parent's branch
   cd "$CHILD_PATH"

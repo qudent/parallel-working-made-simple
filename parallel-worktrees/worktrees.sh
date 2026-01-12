@@ -1,12 +1,11 @@
-: <<'END_COMMENT'
-Installation (macOS/Linux)
-git clone https://github.com/yourname/parallel-working-made-simple.git
-echo -e "\nsource $PWD/parallel-working-made-simple/README.sh" >> ~/.zshrc # or ~/.bashrc for bash
-
-Then restart your terminal or run `source ~/.zshrc` to load the functions.
-
-Code assumes that there is no dir ending with .worktrees in your git repo (except for the ones we manage)
-END_COMMENT
+# Shell functions for parallel worktree management
+# Part of the parallel-worktrees Claude Code skill
+#
+# Installation: Copy the parallel-worktrees folder to ~/.claude/skills/
+# Claude will source this file automatically when using the skill.
+#
+# Assumes no directory ending with .worktrees exists in your git repo
+# (except for the ones managed by these functions)
 
 # Functions for parallel worktree operations
 

@@ -184,6 +184,29 @@ assert_dir_not_exists "$TEST_DIR/test-repo.worktrees/feature-to-abort" "Worktree
 assert_branch_not_exists "feature-to-abort" "Branch deleted"
 
 # =============================================================================
+# Test 5b: worktree_abort from subdirectory
+# =============================================================================
+echo ""
+echo "--- Test 5b: worktree_abort from subdirectory ---"
+
+cd "$TEST_DIR/test-repo"
+worktree_create feature-subdir-abort
+
+mkdir -p src/deep/nested
+echo "deep file" > src/deep/nested/file.txt
+git add src
+git commit -m "add deep directory"
+
+# cd into subdirectory, then abort
+cd src/deep/nested
+
+worktree_abort
+
+assert_pwd_ends_with "test-repo" "cd'd back to parent after abort from subdir"
+assert_dir_not_exists "$TEST_DIR/test-repo.worktrees/feature-subdir-abort" "Worktree removed when aborting from subdir"
+assert_branch_not_exists "feature-subdir-abort" "Branch deleted when aborting from subdir"
+
+# =============================================================================
 # Test 6: worktree_finish
 # =============================================================================
 echo ""

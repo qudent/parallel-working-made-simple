@@ -61,8 +61,9 @@ worktree_merge_from_parent() {
 # Ignores uncommitted changes and unmerged commits!
 worktree_abort() {
   local BRANCHTOMERGE="$(git rev-parse --abbrev-ref HEAD)"
+  local WORKTREE_ROOT="$(git rev-parse --show-toplevel)"  # get root even if in subdirectory
   worktree_cd_to_parent #set CHILD_PATH as side effect
-  git worktree remove --force "$CHILD_PATH"
+  git worktree remove --force "$WORKTREE_ROOT"
   git branch -D "$BRANCHTOMERGE"
 }
 

@@ -17,13 +17,13 @@ Spin up isolated git worktrees, run multiple Claude/Codex agents in parallel, me
 # Source the skill
 source ~/.claude/skills/parallel-worktrees/worktrees.sh
 
-# Create worktree for first bug
+# Create worktree for first bug (this cd's into it)
 worktree_create fix-auth-bug
 # macOS: osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && claude \"fix the authentication timeout bug\""'
 # Linux: xterm -e "cd $(pwd) && claude 'fix the authentication timeout bug'" &
 
-# Back in original terminal, create another worktree
-cd ..  # return to parent
+# Return to parent repo, create another worktree
+worktree_cd_to_parent
 worktree_create fix-button-styling
 # macOS: osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && claude \"fix the submit button styling\""'
 # Linux: xterm -e "cd $(pwd) && claude 'fix the submit button styling'" &
@@ -42,25 +42,26 @@ worktree_create approach-claude
 # macOS: osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && claude \"implement the caching layer\""'
 # Linux: xterm -e "cd $(pwd) && claude 'implement the caching layer'" &
 
-cd ..
+worktree_cd_to_parent
 worktree_create approach-codex
 # macOS: osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && codex \"implement the caching layer\""'
 # Linux: xterm -e "cd $(pwd) && codex 'implement the caching layer'" &
 
-cd ..
+worktree_cd_to_parent
 worktree_create approach-gemini
 # macOS: osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && gemini \"implement the caching layer\""'
 # Linux: xterm -e "cd $(pwd) && gemini 'implement the caching layer'" &
 
-# Compare results across worktrees:
+# Compare results across worktrees (from approach-gemini, siblings are at ../):
 # diff -r ../approach-claude/src ../approach-codex/src
 
 # Keep the best one:
-cd ../approach-claude && worktree_finish
+cd ../approach-claude
+worktree_finish  # now back in /repo
 
-# Discard the others:
-cd ../approach-codex && worktree_abort
-cd ../approach-gemini && worktree_abort
+# Discard the others (use .worktrees paths from repo root):
+cd *.worktrees/approach-codex && worktree_abort
+cd *.worktrees/approach-gemini && worktree_abort
 ```
 
 ### Nested subtasks
@@ -73,13 +74,18 @@ worktree_create new-dashboard
 
 # Spawn subtasks from within the feature branch
 worktree_create dashboard-api      # creates new-dashboard.worktrees/dashboard-api
+worktree_cd_to_parent              # back to new-dashboard
 worktree_create dashboard-ui       # creates new-dashboard.worktrees/dashboard-ui
 
 # Each subtask merges up to the feature branch
 worktree_finish  # dashboard-ui -> new-dashboard
 
+# Back in new-dashboard, finish dashboard-api too
+cd ../new-dashboard.worktrees/dashboard-api
+worktree_finish  # dashboard-api -> new-dashboard
+
 # Feature branch merges up to main
-cd .. && worktree_finish  # new-dashboard -> main
+worktree_finish  # new-dashboard -> main
 ```
 
 ## Installation

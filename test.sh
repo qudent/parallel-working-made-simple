@@ -251,13 +251,27 @@ echo '{"name": "test", "version": "1.0.0"}' > package.json
 git add package.json
 git commit -m "initial with package.json"
 
-# This would normally run pnpm install, but we just verify the structure
-# (pnpm may not be installed in test environment)
-if [[ -f package.json ]]; then
-    pass "package.json detected in repo (pnpm install would trigger)"
-else
-    fail "package.json not found"
-fi
+# Shim pnpm so we can detect whether worktree_create invokes it
+PNPM_LOG="$TEST_DIR/pnpm-install.log"
+FAKE_PNPM_DIR="$TEST_DIR/fake-pnpm"
+mkdir -p "$FAKE_PNPM_DIR"
+: > "$PNPM_LOG"
+
+cat <<EOF > "$FAKE_PNPM_DIR/pnpm"
+#!/bin/bash
+echo "\$@" >> "$PNPM_LOG"
+exit 0
+EOF
+chmod +x "$FAKE_PNPM_DIR/pnpm"
+
+ORIGINAL_PATH="$PATH"
+PATH="$FAKE_PNPM_DIR:$PATH"
+
+worktree_create pnpm-check
+
+PATH="$ORIGINAL_PATH"
+
+assert_file_contains "$PNPM_LOG" "install" "pnpm install triggered when package.json present"
 
 # =============================================================================
 # Summary

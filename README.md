@@ -19,6 +19,7 @@ source ~/.claude/skills/parallel-worktrees/worktrees.sh
 
 # Create worktree for first bug (this cd's into it)
 worktree_create fix-auth-bug
+# we are now in <repo-name>.worktrees/fix-auth-bug in a new branch.
 # macOS: osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && claude \"fix the authentication timeout bug\""'
 # Linux: xterm -e "cd $(pwd) && claude 'fix the authentication timeout bug'" &
 

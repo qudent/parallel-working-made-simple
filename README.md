@@ -4,7 +4,7 @@ Super-simple Claude skill to manage parallel working in worktrees.
 
 ## What is this?
 
-Spin up isolated git worktrees, run multiple Claude/Codex agents in parallel, merge the results. Five shell functions, zero complexity.
+Spin up isolated git worktrees, run multiple Claude/Codex agents in parallel, merge the results. Six shell functions, zero complexity.
 
 - [SKILL.md](parallel-worktrees/SKILL.md) - command reference
 - [gitingest.com/qudent/parallel-working-made-simple](https://gitingest.com/qudent/parallel-working-made-simple) - paste into any AI to explain the code
@@ -57,11 +57,11 @@ worktree_create approach-gemini
 
 # Keep the best one:
 cd ../approach-claude
-worktree_finish  # now back in /repo
+worktree_finish  # now back in repo
 
-# Discard the others (use .worktrees paths from repo root):
-cd *.worktrees/approach-codex && worktree_abort
-cd *.worktrees/approach-gemini && worktree_abort
+# Discard the others (worktrees are at <repo>.worktrees/, alongside the repo):
+cd "$(git rev-parse --show-toplevel).worktrees/approach-codex" && worktree_abort
+cd "$(git rev-parse --show-toplevel).worktrees/approach-gemini" && worktree_abort
 ```
 
 ### Nested subtasks
@@ -91,6 +91,9 @@ worktree_finish  # new-dashboard -> main
 ## Installation
 
 ```bash
+git clone https://github.com/qudent/parallel-working-made-simple.git
+cd parallel-working-made-simple
+
 # Personal (all projects)
 cp -r parallel-worktrees ~/.claude/skills/
 

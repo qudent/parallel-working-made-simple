@@ -20,7 +20,7 @@ source ~/.claude/skills/parallel-worktrees/worktrees.sh && <command>
 
 | Command | Purpose |
 |---------|---------|
-| `worktree_create <branch>` | Create worktree at `<repo>.worktrees/<branch>`, cd into it, run pnpm install if needed |
+| `worktree_create <branch>` | Create branch (if <branch> doesn't exist) and worktree at `<repo>.worktrees/<branch>`, cd into it, run pnpm install if needed |
 | `worktree_cd_to_parent` | Navigate to parent worktree (sets `$CHILD_PATH` as side effect) |
 | `worktree_merge_to_parent` | Merge current branch into parent's branch |
 | `worktree_merge_from_parent` | Pull parent's changes into current worktree |

@@ -4,7 +4,7 @@ Super-simple Claude skill to manage parallel working in worktrees.
 
 ## What is this?
 
-Spin up isolated git worktrees, run multiple Claude/Codex agents in parallel, merge the results. Six shell functions, zero complexity.
+Spin up isolated git worktrees, run multiple Claude/Codex agents in parallel, merge the results. Six simple shell functions.
 
 - [SKILL.md](parallel-worktrees/SKILL.md) - command reference
 - [gitingest.com/qudent/parallel-working-made-simple](https://gitingest.com/qudent/parallel-working-made-simple) - paste into any AI to explain the code

@@ -82,6 +82,14 @@ assert_pwd_ends_with() {
     fi
 }
 
+assert_equals() {
+    if [[ "$1" == "$2" ]]; then
+        pass "$3"
+    else
+        fail "$3 (got '$1', expected '$2')"
+    fi
+}
+
 cleanup() {
     echo ""
     echo "=== Cleanup ==="
@@ -104,12 +112,16 @@ git config user.name "Test User"
 echo "initial content" > file.txt
 git add file.txt
 git commit -m "initial commit"
+ROOT_BRANCH="$(git branch --show-current)"
+ROOT_COMMIT="$(git rev-parse HEAD)"
 
 worktree_create feature-a
 
 assert_dir_exists "$TEST_DIR/test-repo.worktrees/feature-a" "Worktree directory created"
 assert_pwd_ends_with "feature-a" "cd'd into worktree"
 assert_branch_exists "feature-a" "Branch created"
+assert_equals "$(git config --get branch.feature-a.parent-branch)" "$ROOT_BRANCH" "Parent branch metadata recorded"
+assert_equals "$(git config --get branch.feature-a.parent-commit)" "$ROOT_COMMIT" "Parent commit metadata recorded"
 
 # =============================================================================
 # Test 2: worktree_cd_to_parent
@@ -241,6 +253,7 @@ worktree_create nested-child
 
 assert_dir_exists "$TEST_DIR/test-repo.worktrees/parent-feature.worktrees/nested-child" "Nested worktree created"
 assert_pwd_ends_with "nested-child" "cd'd into nested worktree"
+assert_equals "$(git config --get branch.nested-child.parent-branch)" "parent-feature" "Nested parent branch metadata recorded"
 
 # Make change in nested child
 echo "nested change" > nested.txt
@@ -258,6 +271,25 @@ worktree_finish
 
 assert_pwd_ends_with "test-repo" "Back in main repo"
 assert_file_contains "$TEST_DIR/test-repo/nested.txt" "nested change" "Nested changes propagated to main repo"
+
+# =============================================================================
+# Test 7b: worktree_create_from_commit
+# =============================================================================
+echo ""
+echo "--- Test 7b: Create from commit metadata ---"
+
+cd "$TEST_DIR/test-repo"
+BASE_COMMIT="$(git rev-parse HEAD~1)"
+PARENT_BRANCH="$(git branch --show-current)"
+
+worktree_create_from_commit from-old-commit "$BASE_COMMIT"
+
+assert_pwd_ends_with "from-old-commit" "cd'd into commit-based worktree"
+assert_equals "$(git rev-parse HEAD)" "$BASE_COMMIT" "Commit-based worktree starts at requested commit"
+assert_equals "$(git config --get branch.from-old-commit.parent-branch)" "$PARENT_BRANCH" "Commit-based parent branch metadata recorded"
+assert_equals "$(git config --get branch.from-old-commit.parent-commit)" "$BASE_COMMIT" "Commit-based parent commit metadata recorded"
+
+worktree_abort
 
 # =============================================================================
 # Test 8: pnpm install trigger (mock test)

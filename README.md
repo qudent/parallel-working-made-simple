@@ -20,6 +20,8 @@ source ~/.claude/skills/parallel-worktrees/worktrees.sh
 # Create worktree for first bug (this cd's into it)
 worktree_create fix-auth-bug
 # we are now in <repo-name>.worktrees/fix-auth-bug in a new branch.
+# Git config records branch.fix-auth-bug.parent-branch and
+# branch.fix-auth-bug.parent-commit so tools can render ancestry.
 # macOS: osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && claude \"fix the authentication timeout bug\""'
 # Linux: xterm -e "cd $(pwd) && claude 'fix the authentication timeout bug'" &
 
@@ -88,6 +90,16 @@ worktree_finish  # dashboard-api -> new-dashboard
 # Feature branch merges up to main
 worktree_finish  # new-dashboard -> main
 ```
+
+### Parent metadata
+
+Created worktrees record generic Git config metadata on the child branch:
+
+- `branch.<child>.parent-branch`
+- `branch.<child>.parent-commit`
+
+This is intentionally tool-neutral. UIs and dispatchers should read these keys
+instead of inferring ancestry from directory names.
 
 ## Installation
 
